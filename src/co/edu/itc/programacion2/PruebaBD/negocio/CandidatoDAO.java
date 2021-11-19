@@ -4,6 +4,9 @@ import co.edu.itc.programacion2.PruebaBD.vo.CandidatoVO;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 public class CandidatoDAO {
 
@@ -11,15 +14,15 @@ public class CandidatoDAO {
     /**
      * nombre del usuario para conectarse a la base de datos.
      */
-    private String usuario;
+    private String usuario = "root";
     /**
      * clave de conexi?n a la base de datos.
      */
-    private String clave;
+    private String clave = "admin";
     /**
      * URL al cual se debe conectar para acceder a la base de datos.
      */
-    private String cadenaConexion;
+    private String cadenaConexion = "jdbc:mysql://localhost:3306/itc";
 
     public CandidatoDAO() {
         inicializar();
@@ -38,12 +41,14 @@ public class CandidatoDAO {
         }
     }
 
-    public void establecerConexion() {
+    public Connection establecerConexion() {
         try {
+
             conexion = DriverManager.getConnection(cadenaConexion, usuario, clave);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        return conexion;
     }
 
     public void cerrarConexion() {
@@ -55,9 +60,10 @@ public class CandidatoDAO {
         }
     }
 
-    public CandidatoVO ingresarCandidato(CandidatoVO e) {
+    public int ingresarCandidato(CandidatoVO e) {
         CandidatoVO objEst = null;
         establecerConexion();
+        int retorno = 0;
         PreparedStatement ps = null;
         try {
             ps = conexion.prepareStatement("INSERT INTO itc.candidato VALUES(?, ?, ?, ?, ?, ?)");
@@ -68,7 +74,7 @@ public class CandidatoDAO {
             ps.setString(5, e.getTelefonoAcudiente());
             ps.setString(6, e.getGradoAIngresar());
 
-            ps.executeUpdate();
+            retorno = ps.executeUpdate();
             objEst = e;
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -81,7 +87,7 @@ public class CandidatoDAO {
             }
         }
 
-        return objEst;
+        return retorno;
     }
 
     public List<CandidatoVO> listarCandidatos() {
@@ -94,6 +100,7 @@ public class CandidatoDAO {
             resultados = conexion.createStatement().executeQuery("SELECT * FROM itc.candidato");
 
             while (resultados.next()) {
+                Object[] fila = new Object[6];
                 Integer codigo = resultados.getInt(1);
                 String nombre = resultados.getString(2);
                 String apellido = resultados.getString(3);
@@ -138,6 +145,7 @@ public class CandidatoDAO {
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "No existen registros para el codigo utilizado");
         } finally {
             try {
                 resultados.close();
@@ -178,8 +186,8 @@ public class CandidatoDAO {
             }
         }
     }
-    
-    public void eliminiarEstudiante (CandidatoVO e) {
+
+    public void eliminiarEstudiante(CandidatoVO e) {
         establecerConexion();
         PreparedStatement stm = null;
 

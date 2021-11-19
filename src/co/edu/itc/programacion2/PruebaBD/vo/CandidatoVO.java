@@ -1,5 +1,7 @@
 package co.edu.itc.programacion2.PruebaBD.vo;
 
+import javax.swing.JTextField;
+
 public class CandidatoVO {
 
     private Integer codigoCandidato;
@@ -19,6 +21,10 @@ public class CandidatoVO {
         this.nombreAcudiente = nombreAcudiente;
         this.telefonoAcudiente = telefonoAcudiente;
         this.gradoAIngresar = gradoAIngresar;
+    }
+
+    public CandidatoVO(int i, JTextField jTextField1, JTextField jTextField3, JTextField jTextField4, JTextField jTextField5, JTextField jTextField6) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public Integer getCodigoCandidato() {
