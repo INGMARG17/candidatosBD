@@ -100,7 +100,7 @@ public class CandidatoDAO {
             resultados = conexion.createStatement().executeQuery("SELECT * FROM itc.candidato");
 
             while (resultados.next()) {
-                Object[] fila = new Object[6];
+               
                 Integer codigo = resultados.getInt(1);
                 String nombre = resultados.getString(2);
                 String apellido = resultados.getString(3);

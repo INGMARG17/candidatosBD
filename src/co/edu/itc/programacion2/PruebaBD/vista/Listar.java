@@ -1,48 +1,35 @@
 package co.edu.itc.programacion2.PruebaBD.vista;
 
 import co.edu.itc.programacion2.PruebaBD.negocio.CandidatoDAO;
+import co.edu.itc.programacion2.PruebaBD.vo.CandidatoVO;
 import javax.swing.table.DefaultTableModel;
 import java.sql.*;
+import java.util.List;
 
 public class Listar extends javax.swing.JFrame {
 
     public Listar() {
         initComponents();
-        try {
-            DefaultTableModel modelo = new DefaultTableModel();
-            jTable1.setModel(modelo);
-
-            PreparedStatement ps = null;
-            ResultSet rs = null;
-            CandidatoDAO conn = new CandidatoDAO();
-            Connection con = conn.establecerConexion();
-
-            String sql = "SELECT * FROM itc.candidato";
-            ps = con.prepareStatement(sql);
-            rs = ps.executeQuery();
-
-            ResultSetMetaData rsMD = rs.getMetaData();
-            int cantidadColumnas = rsMD.getColumnCount();
-
-            modelo.addColumn("Codigo");
-            modelo.addColumn("Nombre");
-            modelo.addColumn("Apellido");
-            modelo.addColumn("Acudiente");
-            modelo.addColumn("Telefono");
-            modelo.addColumn("Grado");
-
-            while (rs.next()) {
-                Object[] filas = new Object[cantidadColumnas];
-
-                for (int i = 0; i < cantidadColumnas; i++) {
-                    filas[i] = rs.getObject(i + 1);
-                }
-
-                modelo.addRow(filas);
-            }
-
-        } catch (SQLException ex) {
-            System.err.println("Error en el llenado de la tabla.");
+        DefaultTableModel modelo = new DefaultTableModel();
+        jTable1.setModel(modelo);
+        CandidatoDAO conn = new CandidatoDAO();
+        List<CandidatoVO> candidatos = conn.listarCandidatos();
+        modelo.addColumn("Codigo");
+        modelo.addColumn("Nombre");
+        modelo.addColumn("Apellido");
+        modelo.addColumn("Acudiente");
+        modelo.addColumn("Telefono");
+        modelo.addColumn("Grado");
+        
+        String filas[] = new String[6];
+        for (CandidatoVO can : candidatos) {
+            filas[0] = can.getCodigoCandidato().toString();
+            filas[1] = can.getNombre();
+            filas[2] = can.getApellidos();
+            filas[3] = can.getNombreAcudiente();
+            filas[4] = can.getTelefonoAcudiente();
+            filas[5] = can.getGradoAIngresar();
+            modelo.addRow(filas);
         }
 
     }
